@@ -270,6 +270,34 @@ function setBusy(btn, busy=true){
   window.addEventListener('offline', updateOffline);
   updateOffline();
 
+
+// ===== Force Refresh (v10.6.1) =====
+(async function forceRefreshIfRequested(){
+  try{
+    const params = new URLSearchParams(location.search);
+    if (params.get('clear') === '1'){
+      // Clear app caches
+      if ('caches' in window){
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+      // Unregister SW
+      if ('serviceWorker' in navigator){
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+      }
+      // Clear local storage flags that could affect theme/debug
+      try{
+        Object.keys(localStorage).forEach(k => {
+          if (k.startsWith('rb_') || k.startsWith('RB_')) localStorage.removeItem(k);
+        });
+      }catch(e){}
+      // Redirect to clean URL (remove ?clear)
+      const clean = location.href.replace(/([?&])clear=1(&|$)/, (m, a, b)=> a==='?' && b? '?': '').replace(/[?&]$/, '');
+      location.replace(clean);
+    }
+  }catch(e){ console.warn('Force refresh failed', e); }
+})();
   
   // Side Panel actions (replaces FAB)
   const panelToggle = document.getElementById('panelToggle');
