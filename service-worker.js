@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rb-taxi-cache-v10-6-1';
+const CACHE_NAME = 'rb-taxi-cache-v10-7-2';
 const ASSETS = [
   'index.html',
   'style.css?v=10.2.2',
@@ -26,7 +26,7 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith((async ()=>{ try{ const res = await fetch(event.request, {cache:'no-store'}); return res; } catch(e){ return caches.match(event.request); } })()).then(resp => resp || fetch(event.request))
+  event.respondWith((async ()=>{ try{ const r=await fetch(event.request,{cache:'no-store'}); return r; } catch(e){ return caches.match(event.request); } })()).then(resp => resp || fetch(event.request))
   );
 });
 

@@ -9,13 +9,13 @@
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <title>RB TAXI – Výčetka</title>
 <link href="manifest.json" rel="manifest"/>
-<link href="style.css?v=10.6.1" rel="stylesheet"/>
+<link href="style.css?v=10.7.2" rel="stylesheet"/>
 <link href="icon-192.png" rel="icon"/>
 <link href="apple-touch-icon.png" rel="apple-touch-icon"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&amp;family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@600;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@600;800&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script defer="" src="app.js?v=10.6.1"></script>
+<script defer="" src="app.js?v=10.7.2"></script>
 <script>
     if ('serviceWorker' in navigator){
       window.addEventListener('load', ()=>{
@@ -50,7 +50,7 @@
 <img alt="RB TAXI" class="brand-icon" src="icon-192.png"/>
 <div class="brand-text">
 <div class="brand-title">Výčetka řidiče</div>
-<div class="brand-subtitle">RB TAXI • v10.6.1 ULTRA</div>
+<div class="brand-subtitle">RB TAXI • v10.7.2 ULTRA</div>
 </div>
 </div>
 <div class="mode-group">
@@ -60,9 +60,9 @@
 <option value="light">Světlý</option>
 <option value="dark">Tmavý</option>
 </select>
-
 </div>
-</div></header>
+</div>
+</header>
 <div class="offline hidden" id="offlineBanner">Jste offline – změny a výstupy budou dočasně uloženy lokálně.</div>
 <main class="layout">
 <form id="calcForm">
@@ -84,20 +84,23 @@
 <label>🧾 Fakturou: <input id="fakturou" inputmode="decimal" type="number"/></label>
 <label>📦 Jiné: <input id="jine" inputmode="decimal" type="number"/></label>
 <div class="form-actions">
-<button type="submit">📊 Vypočítat</button>
-<button id="resetBtn" type="button">🔄 Reset</button>
+<button type="submit"><span aria-hidden="true" class="ico"><svg aria-hidden="true" fill="none" height="18" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M4 20V10m5 10V6m5 14v-8m5 8V4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></span><span class="label">Vypočítat</span></button>
+<button id="resetBtn" type="button"><span aria-hidden="true" class="ico"><svg aria-hidden="true" fill="none" height="18" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M3 12a9 9 0 1 0 3-6.708M3 4v4h4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></span><span class="label">Reset</span></button>
 </div>
 </form>
 <section class="hidden" id="output"></section>
 <div class="hidden" id="actions">
-<button id="pdfExport" type="button">📄 Export do PDF</button>
-<button id="shareBtn" type="button">📌 Sdílet</button>
-<button id="newShiftBtn" type="button">🔁 Nová směna</button>
+<button id="pdfExport" type="button"><span aria-hidden="true" class="ico"><svg aria-hidden="true" fill="none" height="18" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path><path d="M14 2v6h6" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path><path d="M8 15h8M8 11h8" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></svg></span><span class="label">Export do PDF</span></button>
+<button id="shareBtn" type="button"><span aria-hidden="true" class="ico"><svg aria-hidden="true" fill="none" height="18" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M12 16V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></span><span class="label">Sdílet</span></button>
+<button id="newShiftBtn" type="button"><span aria-hidden="true" class="ico"><svg aria-hidden="true" fill="none" height="18" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M17 2l4 4-4 4M7 22l-4-4 4-4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M21 6H8a4 4 0 0 0-4 4v0M3 18h13a4 4 0 0 0 4-4v0" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></svg></span><span class="label">Nová směna</span></button>
 </div>
 <section class="hidden" id="history"></section>
-
-
-</main>
-<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+<button aria-label="Hlavní akce" class="fab" id="fab">⋮</button>
+<div aria-modal="false" class="fab-sheet hidden" id="fabSheet" role="dialog">
+<button class="secondary" id="fabShare" type="button">📌 Sdílet</button>
+<button id="fabPdf" type="button">📄 Export do PDF</button>
+<button class="secondary" id="fabNew" type="button">🔁 Nová směna</button>
+</div>
+</main><div aria-live="polite" class="toast hidden" id="toast" role="status"></div>
 </body>
 </html>
