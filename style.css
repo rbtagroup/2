@@ -306,3 +306,36 @@ body.light-mode header{
 label:hover input, label:hover select{
   border-color: rgba(212,175,55,.5);
 }
+
+
+
+/* ===== ULTRA micro-interactions (v10.6) ===== */
+.toast{
+  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%) translateY(12px);
+  background: rgba(20,20,20,.92); color: #fff; padding: 10px 14px; border-radius: 12px;
+  box-shadow: 0 14px 32px rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.12);
+  font-weight:700; font-size:14px; opacity:0; pointer-events:none; z-index:50;
+}
+.toast.show{ opacity:1; pointer-events:auto; transform: translateX(-50%) translateY(0); transition: opacity .18s ease, transform .18s ease; }
+.toast .row{ display:flex; align-items:center; gap:10px; }
+.toast .spinner{ width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,.25); border-top-color:#fff; animation: spin .7s linear infinite; }
+.toast .ok{ display:inline-block; font-weight:900; }
+
+@keyframes spin { from{ transform: rotate(0) } to{ transform: rotate(360deg) } }
+
+/* Busy state for buttons */
+button.is-busy{ pointer-events:none; opacity:.85; box-shadow: inset 0 0 0 9999px rgba(0,0,0,.05), 0 6px 12px rgba(0,0,0,.2); position:relative; }
+button.is-busy .spinner{ width:16px; height:16px; border-radius:50%; border:2px solid rgba(0,0,0,.25); border-top-color:rgba(0,0,0,.6); animation: spin .7s linear infinite; margin-left:8px; }
+body.light-mode button.is-busy .spinner{ border-color: rgba(0,0,0,.2); border-top-color: #111; }
+
+/* Premium shimmer on hover */
+button::after{
+  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.18) 45%, transparent 60%);
+  transform: translateX(-120%);
+  transition: transform .6s ease;
+}
+button:hover::after{ transform: translateX(120%); }
+
+/* Reduce shadow when pressing */
+button:active{ box-shadow:0 4px 9px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.35) }

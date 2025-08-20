@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     bar.textContent = 'DEBUG MODE — detailní logy v konzoli (F12)';
     bar.style.cssText = 'position:fixed;left:12px;right:12px;top:12px;padding:10px 12px;border-radius:12px;background:#111;color:#fff;text-align:center;z-index:9999;box-shadow:0 10px 20px rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.15)';
     document.addEventListener('DOMContentLoaded', ()=>document.body.appendChild(bar));
-    window.addEventListener('error', (e)=>{ console.error('[GlobalError]', e.message, e.error); });
+    window.addEventListener('error', (e)=>{ console.error('[GlobalError]', e.message, e.error); t.update('Hotovo ✓'); setBusy(shareBtn,false); setTimeout(()=>t.close(),1000); haptic('light'); playTick(); });
     console.info('[RB-TAXI] Debug mode ON', { ua: navigator.userAgent, theme: document.body.className });
   }
          // minimální požadavek (Kč/km)
@@ -145,33 +145,31 @@ form.addEventListener("submit", e => {
       console.groupEnd();
     }
     output.innerHTML = html;
-    output.classList.remove("hidden");
+    output.classList.remove("hidden"); haptic('medium'); playTick(); showToast('Výpočet hotový ✓', {delay:1200});
     document.getElementById('actions').classList.remove('hidden');
   });
 
-  resetBtn.addEventListener("click", () => {
+  resetBtn.addEventListener("click", () => { haptic('light'); playTick(); const t=showToast('Vymazáno'); setTimeout(()=>t.close(),800);
     form.reset();
     output.classList.add("hidden");
     output.innerHTML = "";
     document.getElementById('actions').classList.add('hidden');
   });
 
-  pdfBtn.addEventListener("click", () => { if(window.RB_DEBUG) console.time('[RB-TAXI] PDF export');
-    html2canvas(output).then(canvas => {
+  pdfBtn.addEventListener("click", ()=>{ haptic('medium'); playTick(); const t=showToast('Připravuji PDF…',{spinner:true,autoHide:false}); setBusy(pdfBtn,true); html2canvas(output).then(canvas => {
       const img = canvas.toDataURL("image/png");
       const pdf = new window.jspdf.jsPDF();
       const width = pdf.internal.pageSize.getWidth();
       const height = (canvas.height * width) / canvas.width;
       pdf.addImage(img, "PNG", 0, 0, width, height);
-      pdf.save("vypocet.pdf"); if(window.RB_DEBUG) console.timeEnd('[RB-TAXI] PDF export');
+      pdf.save("vypocet.pdf"); if(window.RB_DEBUG) console.timeEnd('[RB-TAXI] PDF export'); t.update('PDF hotovo ✓'); setBusy(pdfBtn,false); setTimeout(()=>t.close(),1000); haptic('light'); playTick();
     });
   
   // Sdílení výstupu
   const shareBtn = document.getElementById("shareBtn");
   const newShiftBtn = document.getElementById("newShiftBtn");
 
-  shareBtn.addEventListener("click", async () => { if(window.RB_DEBUG) console.time('[RB-TAXI] Share');
-    try{
+  shareBtn.addEventListener("click", async ()=>{ if(window.RB_DEBUG) console.time('[RB-TAXI] Share'); haptic('light'); playTick(); const t=showToast('Sdílím…',{spinner:true,autoHide:false}); setBusy(shareBtn,true); try{
       const text = output.innerText;
       if (navigator.share){
         await navigator.share({title:"Výčetka řidiče", text});
@@ -182,7 +180,7 @@ form.addEventListener("submit", e => {
     }catch(e){ console.warn(e); if(window.RB_DEBUG) console.error('[RB-TAXI] Share error', e); }
   });
 
-  newShiftBtn.addEventListener("click", () => { if(window.RB_DEBUG) console.log('[RB-TAXI] Nová směna');
+  newShiftBtn.addEventListener("click", () => { haptic('light'); playTick(); const t=showToast('Nová směna připravena'); setTimeout(()=>t.close(),800); if(window.RB_DEBUG) console.log('[RB-TAXI] Nová směna');
     form.reset();
     output.innerHTML = "";
     output.classList.add("hidden");
@@ -206,6 +204,62 @@ form.addEventListener("submit", e => {
   }
 });
   
+
+// ===== ULTRA utilities (v10.6) =====
+let __audioCtx=null;
+function haptic(type='light'){
+  try{
+    if (navigator.vibrate){ navigator.vibrate(type==='heavy'? 20 : type==='medium'? 12 : 8); }
+  }catch(e){}
+}
+function playTick(){
+  try{
+    if(!__audioCtx){ __audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    const ctx = __audioCtx;
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = 'triangle'; o.frequency.value = 320; // short soft tick
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
+    o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.1);
+  }catch(e){}
+}
+function showToast(msg, opts={}){
+  const toast = document.getElementById('toast');
+  if(!toast) return { update:()=>{}, close:()=>{} };
+  const withSpinner = !!opts.spinner;
+  toast.innerHTML = `<div class="row">${withSpinner?'<span class="spinner" aria-hidden="true"></span>':''}<span>${msg}</span></div>`;
+  toast.classList.add('show'); toast.classList.remove('hidden');
+  let timer = null;
+  if(opts.autoHide!==false){
+    const delay = opts.delay || 2000;
+    timer = setTimeout(()=>{ toast.classList.remove('show'); setTimeout(()=>toast.classList.add('hidden'), 220); }, delay);
+  }
+  return {
+    update(newMsg, more={}){
+      toast.innerHTML = `<div class="row">${more.spinner?'<span class="spinner" aria-hidden="true"></span>':''}<span>${newMsg}</span></div>`;
+    },
+    close(){
+      if(timer) clearTimeout(timer);
+      toast.classList.remove('show');
+      setTimeout(()=>toast.classList.add('hidden'), 220);
+    }
+  };
+}
+function setBusy(btn, busy=true){
+  if(!btn) return;
+  if(busy){
+    if(!btn.querySelector('.spinner')){
+      const sp = document.createElement('span'); sp.className='spinner'; btn.appendChild(sp);
+    }
+    btn.classList.add('is-busy'); btn.setAttribute('aria-busy','true'); btn.disabled = true;
+  }else{
+    btn.classList.remove('is-busy'); btn.removeAttribute('aria-busy'); btn.disabled = false;
+    const sp = btn.querySelector('.spinner'); if(sp) sp.remove();
+  }
+}
+
 // Offline banner
   const offlineBanner = document.getElementById("offlineBanner");
   function updateOffline(){
@@ -250,7 +304,7 @@ form.addEventListener("submit", e => {
       try{
         const text = output.innerText;
         if (navigator.share){ await navigator.share({title:"Výčetka řidiče", text}); }
-        else{ await navigator.clipboard.writeText(text); alert("Zkopírováno do schránky."); }
+        else{ await navigator.clipboard.writeText(text); }
         closePanel();
       }catch(e){ console.warn(e); if(window.RB_DEBUG) console.error('[RB-TAXI] Share error', e); }
     });
