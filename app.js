@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const THEME_MODE_KEY = 'rb_taxi_theme_mode';
   const THEME_KEY = 'rb_taxi_theme';
 
-
   const form = document.getElementById("calcForm");
   const output = document.getElementById("output");
   const resetBtn = document.getElementById("resetBtn");
@@ -199,7 +198,6 @@ form.addEventListener("submit", e => {
     return parseFloat(document.getElementById(id).value) || 0;
   }
 
-
   // Registrace service workeru pro PWA (pokud je podporováno)
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
@@ -208,8 +206,6 @@ form.addEventListener("submit", e => {
   }
 });
   
-  // Safe reference for output (outside DOMContentLoaded scope)
-  const output = document.getElementById('output');
 // Offline banner
   const offlineBanner = document.getElementById("offlineBanner");
   function updateOffline(){

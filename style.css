@@ -220,34 +220,89 @@ body.light-mode .mode-group select{background:#fff;color:#111;border:1px solid r
 
 
 
-/* --- Unified Side Panel --- */
-.backdrop{
-  position:fixed; inset:0; background:rgba(0,0,0,.45);
-  backdrop-filter: blur(4px);
-  opacity:0; pointer-events:none; transition: opacity .25s ease;
-  z-index:40;
-}
-.backdrop.show{ opacity:1; pointer-events:auto; }
-
-.side-panel{
-  position:fixed; top:0; right:0; height:100%; width:min(360px, 92vw);
-  background:var(--card); border-left:1px solid var(--card-border);
-  box-shadow: -24px 0 48px rgba(0,0,0,.35);
-  transform: translateX(100%);
-  transition: transform .28s ease;
-  z-index:41; display:flex; flex-direction:column;
-  border-top-left-radius:18px; border-bottom-left-radius:18px;
-}
-.side-panel.open{ transform: translateX(0); }
-
-.side-panel__header{ display:flex; align-items:center; justify-content:space-between;
-  padding:16px; border-bottom:1px solid var(--card-border); }
-.side-panel__title{ font-weight:800; letter-spacing:.3px; }
-.icon-btn{ border:none; background:transparent; font-size:18px; cursor:pointer; }
-.side-panel__content{ display:grid; gap:10px; padding:16px; }
-.side-panel__footer{ margin-top:auto; padding:12px 16px; border-top:1px solid var(--card-border); font-size:12px; color:var(--muted); }
-
-.w-full{ width:100%; }
-
 /* Hide previous FAB UI for a cleaner, unified look */
 .fab, .fab-sheet{ display:none !important; }
+
+
+
+/* === Luxury polish & unified sizing (v10.5) === */
+
+/* Button sizing — unify to smaller premium size */
+:root{ --btn-h:44px; --btn-radius:12px; --btn-pad-y:10px; --btn-pad-x:14px; --btn-fs:15px; }
+
+button{
+  min-height:var(--btn-h);
+  border-radius:var(--btn-radius);
+  padding:var(--btn-pad-y) var(--btn-pad-x);
+  font-size:var(--btn-fs);
+  font-weight:800;
+}
+/* Primary (gold) */
+button{
+  background:linear-gradient(180deg, var(--gold-2), var(--gold));
+  color:#1a1a1a;
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+  box-shadow:0 8px 18px rgba(212,175,55,.22), inset 0 1px 0 rgba(255,255,255,.4);
+}
+button:hover{ filter:saturate(110%); }
+button:active{ transform:translateY(1px); }
+
+/* Secondary / outline */
+button.secondary{
+  background:transparent;
+  color:var(--ink);
+  border:1px solid var(--card-border);
+  text-shadow:none;
+  box-shadow:none;
+}
+body.light-mode button.secondary{ color:#111; border-color:rgba(0,0,0,.18); }
+
+/* Inputs — glassy with premium focus */
+input, select, textarea{
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--card-border);
+  border-radius:12px;
+  padding:12px 12px;
+  color:var(--ink);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+body.light-mode input, body.light-mode select, body.light-mode textarea{
+  background:#fff; color:#111; border-color:rgba(0,0,0,.12);
+}
+input:focus, select:focus, textarea:focus{
+  outline:none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212,175,55,.25);
+}
+
+/* Cards & output */
+#output{
+  border-radius:16px;
+  border:1px solid var(--card-border);
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  box-shadow: var(--shadow);
+  padding:16px;
+}
+#output .hr{ height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent); margin:12px 0; }
+
+/* App bar polish */
+header{
+  position:sticky; top:0; z-index:10;
+  background:linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,0));
+  border-bottom:1px solid var(--card-border);
+  backdrop-filter: blur(6px);
+}
+body.light-mode header{
+  background:linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,0));
+}
+
+/* Action areas grid — consistent spacing */
+.form-actions, #actions{ display:grid; grid-template-columns:1fr; gap:12px; }
+@media (min-width:520px){
+  .form-actions, #actions{ grid-template-columns:repeat(3,1fr); }
+}
+
+/* Micro-interactions */
+label:hover input, label:hover select{
+  border-color: rgba(212,175,55,.5);
+}

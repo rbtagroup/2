@@ -9,13 +9,13 @@
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <title>RB TAXI – Výčetka</title>
 <link href="manifest.json" rel="manifest"/>
-<link href="style.css?v=10.4.0" rel="stylesheet"/>
+<link href="style.css?v=10.5.0" rel="stylesheet"/>
 <link href="icon-192.png" rel="icon"/>
 <link href="apple-touch-icon.png" rel="apple-touch-icon"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@600;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&amp;family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@600;800&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script defer="" src="app.js?v=10.4.0"></script>
+<script defer="" src="app.js?v=10.5.0"></script>
 <script>
     if ('serviceWorker' in navigator){
       window.addEventListener('load', ()=>{
@@ -60,7 +60,7 @@
 <option value="light">Světlý</option>
 <option value="dark">Tmavý</option>
 </select>
-<button aria-label="Otevřít panel" class="toggle" id="panelToggle" title="Možnosti">⋯</button>
+
 </div>
 </div></header>
 <div class="offline hidden" id="offlineBanner">Jste offline – změny a výstupy budou dočasně uloženy lokálně.</div>
@@ -97,19 +97,6 @@
 <section class="hidden" id="history"></section>
 
 
-<div aria-hidden="true" class="backdrop hidden" id="overlay"></div>
-<aside aria-hidden="true" aria-label="Postranní panel" class="side-panel" id="sidePanel">
-<div class="side-panel__header">
-<div class="side-panel__title">Možnosti</div>
-<button aria-label="Zavřít" class="icon-btn" id="panelClose" type="button">✕</button>
-</div>
-<div class="side-panel__content">
-<button class="secondary w-full" id="panelShare" type="button">📌 Sdílet</button>
-<button class="w-full" id="panelPdf" type="button">📄 Export do PDF</button>
-<button class="secondary w-full" id="panelNew" type="button">🔁 Nová směna</button>
-</div>
-<div class="side-panel__footer muted">RB TAXI • Výčetka</div>
-</aside>
 </main>
 </body>
 </html>
