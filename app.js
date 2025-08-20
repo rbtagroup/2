@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     bar.textContent = 'DEBUG MODE — detailní logy v konzoli (F12)';
     bar.style.cssText = 'position:fixed;left:12px;right:12px;top:12px;padding:10px 12px;border-radius:12px;background:#111;color:#fff;text-align:center;z-index:9999;box-shadow:0 10px 20px rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.15)';
     document.addEventListener('DOMContentLoaded', ()=>document.body.appendChild(bar));
-    window.addEventListener('error', (e)=>{ console.error('[GlobalError]', e.message, e.error); t.update('Hotovo ✓'); setBusy(shareBtn,false); setTimeout(()=>t.close(),1000); haptic('light'); playTick(); });
+    window.addEventListener('error', (e)=>{ console.error('[GlobalError]', e.message, e.error); });
     console.info('[RB-TAXI] Debug mode ON', { ua: navigator.userAgent, theme: document.body.className });
   }
          // minimální požadavek (Kč/km)
@@ -146,32 +146,32 @@ form.addEventListener("submit", e => {
       console.groupEnd();
     }
     output.innerHTML = html;
-    output.classList.remove("hidden"); haptic('medium'); playTick(); showToast('Výpočet hotový ✓', {delay:1200});
+    output.classList.remove("hidden");
     document.getElementById('actions').classList.remove('hidden');
   });
 
-  resetBtn.addEventListener("click", () => { haptic('light'); playTick(); const t=showToast('Vymazáno'); setTimeout(()=>t.close(),800);
+  resetBtn.addEventListener("click", () => {
     form.reset();
     output.classList.add("hidden");
     output.innerHTML = "";
     document.getElementById('actions').classList.add('hidden');
   });
 
-  pdfBtn.addEventListener("click", ()=>{ haptic('medium'); playTick(); const t=showToast('Připravuji PDF…',{spinner:true,autoHide:false}); setBusy(pdfBtn,true); if(window.RB_DEBUG) console.time('[RB-TAXI] PDF export');
+  pdfBtn.addEventListener("click", () => { if(window.RB_DEBUG) console.time('[RB-TAXI] PDF export');
     html2canvas(output).then(canvas => {
       const img = canvas.toDataURL("image/png");
       const pdf = new window.jspdf.jsPDF();
       const width = pdf.internal.pageSize.getWidth();
       const height = (canvas.height * width) / canvas.width;
       pdf.addImage(img, "PNG", 0, 0, width, height);
-      pdf.save("vypocet.pdf"); t.update('PDF hotovo ✓'); setBusy(pdfBtn,false); setTimeout(()=>t.close(),1000); haptic('light'); playTick(); if(window.RB_DEBUG) console.timeEnd('[RB-TAXI] PDF export');
+      pdf.save("vypocet.pdf"); if(window.RB_DEBUG) console.timeEnd('[RB-TAXI] PDF export');
     });
   
   // Sdílení výstupu
   const shareBtn = document.getElementById("shareBtn");
   const newShiftBtn = document.getElementById("newShiftBtn");
 
-  shareBtn.addEventListener("click", async ()=>{ haptic('light'); playTick(); const t=showToast('Sdílím…',{spinner:true,autoHide:false}); setBusy(shareBtn,true); if(window.RB_DEBUG) console.time('[RB-TAXI] Share');
+  shareBtn.addEventListener("click", async () => { if(window.RB_DEBUG) console.time('[RB-TAXI] Share');
     try{
       const text = output.innerText;
       if (navigator.share){
@@ -183,7 +183,7 @@ form.addEventListener("submit", e => {
     }catch(e){ console.warn(e); if(window.RB_DEBUG) console.error('[RB-TAXI] Share error', e); }
   });
 
-  newShiftBtn.addEventListener("click", () => { haptic('light'); playTick(); const t=showToast('Nová směna připravena'); setTimeout(()=>t.close(),800); if(window.RB_DEBUG) console.log('[RB-TAXI] Nová směna');
+  newShiftBtn.addEventListener("click", () => { if(window.RB_DEBUG) console.log('[RB-TAXI] Nová směna');
     form.reset();
     output.innerHTML = "";
     output.classList.add("hidden");
@@ -207,17 +207,7 @@ form.addEventListener("submit", e => {
     });
   }
 });
-  
-// ===== ULTRA utilities (v10.7.2) =====
-let __audioCtx=null;
-function haptic(type='light'){ try{ if(navigator.vibrate){ navigator.vibrate(type==='heavy'?20:type==='medium'?12:8); } }catch(e){} }
-function playTick(){ try{ if(!__audioCtx){ __audioCtx=new (window.AudioContext||window.webkitAudioContext)(); } const c=__audioCtx,o=c.createOscillator(),g=c.createGain(); o.type='triangle'; o.frequency.value=320; g.gain.setValueAtTime(0.0001,c.currentTime); g.gain.exponentialRampToValueAtTime(0.05,c.currentTime+0.005); g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+0.08); o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime+0.1);}catch(e){} }
-function showToast(msg,opts={}){ const t=document.getElementById('toast'); if(!t) return {update:()=>{},close:()=>{}}; const sp=!!opts.spinner; t.innerHTML=`<div class="row">${sp?'<span class="spinner" aria-hidden="true"></span>':''}<span>${msg}</span></div>`; t.classList.add('show'); t.classList.remove('hidden'); let timer=null; if(opts.autoHide!==false){ const d=opts.delay||2000; timer=setTimeout(()=>{t.classList.remove('show'); setTimeout(()=>t.classList.add('hidden'),220)},d); } return {update(m,more={}){ t.innerHTML=`<div class="row">${more.spinner?'<span class="spinner" aria-hidden="true"></span>':''}<span>${m}</span></div>`; }, close(){ if(timer) clearTimeout(timer); t.classList.remove('show'); setTimeout(()=>t.classList.add('hidden'),220); }}; }
-function setBusy(btn,b=true){ if(!btn) return; if(b){ if(!btn.querySelector('.spinner')){const s=document.createElement('span'); s.className='spinner'; btn.appendChild(s);} btn.classList.add('is-busy'); btn.setAttribute('aria-busy','true'); btn.disabled=true; } else { btn.classList.remove('is-busy'); btn.removeAttribute('aria-busy'); btn.disabled=false; const s=btn.querySelector('.spinner'); if(s) s.remove(); } }
-// Force Refresh (?clear=1)
-(async function(){ try{ const p=new URLSearchParams(location.search); if(p.get('clear')==='1'){ if('caches' in window){ const ks=await caches.keys(); await Promise.all(ks.map(k=>caches.delete(k))); } if('serviceWorker' in navigator){ const rs=await navigator.serviceWorker.getRegistrations(); await Promise.all(rs.map(r=>r.unregister())); } try{ Object.keys(localStorage).forEach(k=>{ if(k.startsWith('rb_')||k.startsWith('RB_')) localStorage.removeItem(k); }); }catch(e){} const clean=location.href.replace(/([?&])clear=1(&|$)/,(m,a,b)=> a==='?'&&b?'?':'').replace(/[?&]$/,''); location.replace(clean); } }catch(e){} })();
-
-// Offline banner
+  // Offline banner
   const offlineBanner = document.getElementById("offlineBanner");
   function updateOffline(){
     if (navigator.onLine){ offlineBanner.classList.add('hidden'); }
@@ -227,4 +217,15 @@ function setBusy(btn,b=true){ if(!btn) return; if(b){ if(!btn.querySelector('.sp
   window.addEventListener('offline', updateOffline);
   updateOffline();
 
-  
+  // FAB actions
+  const fabShare = document.getElementById('fabShare');
+  const fabPdf = document.getElementById('fabPdf');
+  const fabNew = document.getElementById('fabNew');
+  fabShare.addEventListener('click', async ()=>{
+    try{
+      const text = output.innerText;
+      if (navigator.share){ await navigator.share({title:"Výčetka řidiče", text}); }
+      else{ await navigator.clipboard.writeText(text); alert("Zkopírováno do schránky."); }
+    }catch(e){ console.warn(e); if(window.RB_DEBUG) console.error('[RB-TAXI] Share error', e); }
+  });
+  fabPdf.addEventListener('click', ()=>{ document.getElementById('pdfExport').click(); });
