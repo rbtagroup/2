@@ -1,0 +1,253 @@
+
+
+:root{
+  /* Premium palette */
+  --gold:#d4af37;
+  --gold-2:#f0d46a;
+  --gold-3:#a67c00;
+  --ink:#e7e7e7;
+  --muted:#a8b0be;
+  --bg:#0b0b0b;                 /* default dark */
+  --bg-grad-start:#0b0b0b;
+  --bg-grad-end:#131313;
+  --card:rgba(24,24,24,.72);    /* glass */
+  --card-border:rgba(255,255,255,.08);
+  --shadow:0 18px 50px rgba(0,0,0,.35);
+  --green:#30d0b0;
+  --blue:#4aa8ff;
+  --ring:rgba(212,175,55,.35);
+}
+
+/* Light mode overrides */
+body.light-mode{
+  --ink:#111;
+  --muted:#6b7280;
+  --bg:#fff7ef;
+  --bg-grad-start:#fff7ef;
+  --bg-grad-end:#ffe9c9;
+  --card:rgba(255,255,255,.86);
+  --card-border:rgba(0,0,0,.08);
+  --shadow:0 12px 30px rgba(0,0,0,.10);
+  --green:#0ea5a0;
+  --blue:#2563eb;
+  --ring:rgba(212,175,55,.22);
+}
+
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;background:linear-gradient(180deg,var(--bg-grad-start),var(--bg-grad-end));color:var(--ink)}
+header{position:sticky;top:0;background:linear-gradient(180deg,#fff,rgba(255,255,255,.85));backdrop-filter:saturate(120%) blur(6px);border-bottom:1px solid rgba(0,0,0,.05);z-index:10}
+header h1{margin:0;padding:18px 16px;font-family:"Playfair Display", serif;font-weight:600;color:var(--gold);letter-spacing:.2px}
+
+main{padding:16px;max-width:760px;margin:0 auto}
+
+form, #output, #history{background:var(--card);border:1px solid rgba(0,0,0,.06);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+label{display:block;margin:10px 0 6px 0;font-weight:600;color:var(--muted)}
+input,select,textarea{width:100%;padding:12px 14px;border:1px solid rgba(0,0,0,.12);border-radius:12px;background:#fff;font-size:16px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+
+.form-actions, #actions{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
+button{appearance:none;border:none;border-radius:14px;padding:12px 16px;font-weight:700;background:var(--gold);color:#fff;box-shadow:var(--shadow);}
+button:active{transform:translateY(1px)}
+button.secondary{background:#fff;color:var(--ink);border:1px solid rgba(0,0,0,.12)}
+
+#output .title{font-family:"Playfair Display", serif;font-weight:600;color:var(--gold);font-size:22px;margin:0 0 8px 0;display:flex;align-items:center;gap:8px}
+#output .row{display:flex;align-items:center;gap:10px;margin:6px 0}
+#output .row .key{min-width:140px;font-weight:700;color:#111}
+#output .row .val{flex:1}
+#output .hr{height:1px;background:rgba(0,0,0,.08);margin:10px 0}
+#output .money-blue{color:var(--blue);font-weight:700}
+#output .money-green{color:var(--green);font-weight:700}
+
+.note{border:2px dashed rgba(0,0,0,.15);border-radius:12px;padding:12px;margin-top:12px;background:#fff}
+.hidden{display:none}
+
+@media (min-width:520px){
+  .form-actions, #actions{grid-template-columns:repeat(3,1fr)}
+}
+
+
+/* Header brand */
+header h1{display:flex;align-items:center;gap:10px}
+.brand-icon{width:28px;height:28px;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.brand-title{font-size:20px}
+
+/* Mobile fine-tuning */
+@media (max-width:390px){
+  main{padding:12px}
+  input,select,textarea{font-size:16px;padding:11px 12px}
+  .brand-title{font-size:18px}
+  #output .row .key{min-width:120px}
+}
+
+/* Improve tap targets */
+button{min-height:48px}
+select{min-height:44px}
+label{margin-top:8px}
+
+#output .money-red{color:#b91c1c;font-weight:700}
+
+
+*{transition:background-color .25s ease,color .25s ease, border-color .25s ease}
+.theme-fade{animation: themeFade .25s ease both}
+@keyframes themeFade{from{opacity:.6}to{opacity:1}}
+.mode-group{display:flex;align-items:center;gap:8px}
+.mode-group select{height:40px;border-radius:10px;padding:0 10px;background:rgba(255,255,255,.06);color:#f0f0f0;border:1px solid rgba(255,255,255,.14)}
+body.light-mode .mode-group select{background:#fff;color:#111;border:1px solid rgba(0,0,0,.12)}
+.offline{position:sticky;top:56px;z-index:15;background:#b91c1c;color:#fff;padding:8px 16px;text-align:center;border-bottom:1px solid rgba(0,0,0,.12)}
+body.light-mode .offline{background:#dc2626;color:#fff}
+.fab{position:fixed;right:16px;bottom:16px;border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 10px 24px rgba(0,0,0,.35);z-index:30}
+.fab-sheet{position:fixed;right:16px;bottom:80px;display:grid;gap:10px;background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border:1px solid var(--card-border);padding:12px;border-radius:14px;box-shadow:var(--shadow);z-index:30}
+body.light-mode .fab-sheet{background:#fff;border:1px solid rgba(0,0,0,.08)}
+@media (min-width: 900px){ .layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start} .layout > form{order:1} .layout > #output{order:2} }
+
+
+/* Premium background texture (very subtle) */
+body::before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;
+  background-image:
+    radial-gradient(1200px 500px at 120% -10%, rgba(212,175,55,.10), transparent 60%),
+    radial-gradient(800px 400px at -10% 110%, rgba(212,175,55,.06), transparent 60%);
+  z-index:0;
+}
+
+header, main, .layout, form, #output, #history{position:relative; z-index:1}
+
+/* App bar */
+header{
+  position:sticky;top:0;z-index:10;
+  backdrop-filter:saturate(140%) blur(8px);
+  background:linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,0));
+  border-bottom:1px solid var(--card-border);
+}
+body.light-mode header{
+  background:linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,0));
+}
+
+/* Brand */
+.appbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{width:34px;height:34px;border-radius:10px;box-shadow:0 6px 14px rgba(0,0,0,.25)}
+.brand-title{font-family:"Playfair Display", serif;font-weight:800;letter-spacing:.3px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand-subtitle{font-family:"Plus Jakarta Sans", system-ui, sans-serif;color:var(--muted);font-weight:600;font-size:12px;margin-top:-2px}
+
+/* Surface (glass) */
+form, #output, #history{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(10px) saturate(120%);
+}
+
+/* Inputs */
+label{display:block;margin:10px 0 6px 0;font-weight:700;color:var(--muted)}
+input,select,textarea{
+  width:100%;padding:12px 14px;border:1px solid var(--card-border);
+  border-radius:12px;background:transparent;color:var(--ink);font-size:16px;outline:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+body.light-mode input,body.light-mode select,body.light-mode textarea{background:#fff}
+input:focus,select:focus,textarea:focus{border-color:var(--ring);box-shadow:0 0 0 3px var(--ring)}
+
+/* Buttons */
+button{
+  appearance:none;border:none;border-radius:14px;padding:12px 16px;font-weight:800;
+  background:linear-gradient(180deg, var(--gold-2), var(--gold));
+  color:#1a1a1a;text-shadow:0 1px 0 rgba(255,255,255,.4);
+  box-shadow:0 8px 18px rgba(212,175,55,.25), inset 0 1px 0 rgba(255,255,255,.4);
+  transition:transform .12s ease, box-shadow .2s ease, filter .2s ease;
+}
+button:hover{filter:saturate(110%)}
+button:active{transform:translateY(1px)}
+button.secondary{
+  background:transparent;color:var(--ink);
+  border:1px solid var(--card-border);
+  text-shadow:none;box-shadow:var(--shadow);
+}
+
+/* Output typography & badges */
+#output .title{
+  font-family:"Playfair Display", serif;font-weight:800;font-size:24px;margin:0 0 10px 0;
+  display:flex;align-items:center;gap:8px;
+}
+#output .row{display:flex;align-items:center;gap:10px;margin:6px 0}
+#output .row .key{min-width:160px;font-weight:800;color:var(--ink);opacity:.9}
+#output .row .val{flex:1}
+#output .hr{height:1px;background:var(--card-border);margin:12px 0}
+#output .money-blue{color:var(--blue);font-weight:800}
+#output .money-green{color:var(--green);font-weight:800}
+#output .money-red{color:#ff6b6b;font-weight:800}
+
+/* Note box */
+.note{border:1px dashed var(--card-border);border-radius:12px;padding:12px;margin-top:12px;background:transparent}
+
+/* Offline banner */
+.offline{
+  position:sticky;top:56px;z-index:15;background:#7a1f1f;color:#fff;
+  padding:10px 16px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08)
+}
+body.light-mode .offline{background:#dc2626;color:#fff}
+
+/* FAB */
+.fab{
+  position:fixed;right:16px;bottom:16px;border-radius:16px;width:56px;height:56px;
+  display:flex;align-items:center;justify-content:center;font-size:20px;z-index:30;
+  background:linear-gradient(180deg,var(--gold-2),var(--gold));color:#111;
+  box-shadow:0 10px 24px rgba(0,0,0,.35);
+}
+.fab-sheet{
+  position:fixed;right:16px;bottom:80px;display:grid;gap:10px;padding:12px;border-radius:14px;
+  background:var(--card);border:1px solid var(--card-border);box-shadow:var(--shadow);z-index:30
+}
+
+/* Layout refinements */
+main{padding:18px;max-width:820px;margin:0 auto}
+@media (min-width:520px){ .form-actions, #actions{grid-template-columns:repeat(3,1fr)} }
+@media (min-width: 900px){ .layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start} .layout > form{order:1} .layout > #output{order:2} }
+
+/* Smooth transitions */
+*{transition:background-color .25s ease,color .25s ease, border-color .25s ease, box-shadow .25s ease, filter .25s ease}
+.theme-fade{animation: themeFade .25s ease both}
+@keyframes themeFade{from{opacity:.72}to{opacity:1}}
+.mode-group{display:flex;align-items:center;gap:8px}
+.mode-group .toggle{height:40px;min-width:40px;border-radius:12px;border:1px solid var(--card-border);background:transparent;color:var(--ink)}
+.mode-group select{height:40px;border-radius:10px;padding:0 10px;background:transparent;color:var(--ink);border:1px solid var(--card-border)}
+body.light-mode .mode-group select{background:#fff;color:#111;border:1px solid rgba(0,0,0,.12)}
+
+
+
+/* --- Unified Side Panel --- */
+.backdrop{
+  position:fixed; inset:0; background:rgba(0,0,0,.45);
+  backdrop-filter: blur(4px);
+  opacity:0; pointer-events:none; transition: opacity .25s ease;
+  z-index:40;
+}
+.backdrop.show{ opacity:1; pointer-events:auto; }
+
+.side-panel{
+  position:fixed; top:0; right:0; height:100%; width:min(360px, 92vw);
+  background:var(--card); border-left:1px solid var(--card-border);
+  box-shadow: -24px 0 48px rgba(0,0,0,.35);
+  transform: translateX(100%);
+  transition: transform .28s ease;
+  z-index:41; display:flex; flex-direction:column;
+  border-top-left-radius:18px; border-bottom-left-radius:18px;
+}
+.side-panel.open{ transform: translateX(0); }
+
+.side-panel__header{ display:flex; align-items:center; justify-content:space-between;
+  padding:16px; border-bottom:1px solid var(--card-border); }
+.side-panel__title{ font-weight:800; letter-spacing:.3px; }
+.icon-btn{ border:none; background:transparent; font-size:18px; cursor:pointer; }
+.side-panel__content{ display:grid; gap:10px; padding:16px; }
+.side-panel__footer{ margin-top:auto; padding:12px 16px; border-top:1px solid var(--card-border); font-size:12px; color:var(--muted); }
+
+.w-full{ width:100%; }
+
+/* Hide previous FAB UI for a cleaner, unified look */
+.fab, .fab-sheet{ display:none !important; }
